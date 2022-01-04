@@ -8,3 +8,6 @@ env/
 __pycache__/
 
 *credentials*
+
+# general artifacts
+wkdir/
