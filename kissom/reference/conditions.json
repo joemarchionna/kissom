@@ -1,0 +1,38 @@
+[
+    {
+        "fieldName": "firstName",
+        "fieldValue": "Johnny"
+    },
+    {
+        "operator": "OR",
+        "conditions": [
+            {
+                "operator": "AND",
+                "conditions": [
+                    {
+                        "fieldName": "firstName",
+                        "fieldValue": "Johnny",
+                        "comparer": "="
+                    },
+                    {
+                        "fieldName": "lastName",
+                        "fieldValue": "Appleseed"
+                    }
+                ]
+            },
+            {
+                "operator": "AND",
+                "conditions": [
+                    {
+                        "fieldName": "firstName",
+                        "fieldValue": "Patrick"
+                    },
+                    {
+                        "fieldName": "lastName",
+                        "fieldValue": "Putnum"
+                    }
+                ]
+            }
+        ]
+    }
+]

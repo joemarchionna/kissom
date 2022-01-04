@@ -1,0 +1,18 @@
+{
+  "exSchema1.exTable1": [
+    {
+      "db": {
+        "index": 1,
+        "name": "id",
+        "type": "integer",
+        "default": "",
+        "isNullable": false,
+        "isUpdatable": true
+      },
+      "obj": {
+        "name": "id",
+        "type": "integer"
+      }
+    }
+  ]
+}
