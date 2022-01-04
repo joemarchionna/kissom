@@ -56,8 +56,31 @@ record = {
 mgr = StoreManager(adapter=PgAdapter(connectionString="<add your conn str here>"))
 insertedRecord = mgr.insert(obj=record, fqtn="example.car")
 ```
-Note that the fqtn can be included in the record with the key "__fqtn__". Also note that the manager 
+Note that the fqtn can be included in the record with the key "\_\_fqtn__". Also note that the manager 
 will convert grossKg to gross_kg.
+
+Getting all of the stored records in the table:
+
+```
+records = mgr.select(fqtn = "example.car")
+```
+or a specific record:
+
+```
+records = mgr.select(fqtn="example.car", conditions={"fieldName": "color", "fieldValue": "white"})
+```
+
+Update the record changing the color to 'red':
+
+```
+mgr.update(obj={"__fqtn__": "example.car", "id": 1001, "color": "red"})
+```
+
+Lastly, close the connection:
+
+```
+mgr.adapter.closeConnection()
+```
 
 Tests
 =====
