@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2022 01 05
+### Added
+- enter and exit methods in StoreManager
+
 ## [1.0.4] - 2022 01 05
 ### Added
 - References to kissom.__init__.py

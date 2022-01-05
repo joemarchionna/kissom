@@ -38,6 +38,14 @@ class StoreManager(object):
         self.config = config
         self.configFileName = configFN
 
+    def __enter__(self):
+        self.logger.debug("Executing __enter__")
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.logger.debug("Executing __exit__")
+        self.adapter.closeConnection()
+
     def getConfig(self, tableNames: list, configFN: str = None):
         """returns the configuration for the tables specified from the store adapter"""
         self.logger.debug("Getting Table Definitions From Store For '{}'".format(tableNames))
