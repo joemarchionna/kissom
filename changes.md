@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2022 01 14
+### Added
+- xaction parameter to next method
+
 ## [1.3.0] - 2022 01 14
 ### Added
 - sequenceName parameter to insert method
