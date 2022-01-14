@@ -1,5 +1,8 @@
+from asyncio.log import logger
 import logging
+from os import name
 from kissom.storeAdapter import StoreAdapter
+from kissom.utils.sequences import assignNextValue
 from kissom.utils.storeConfig import (
     loadConfigFile,
     saveConfigFile,
@@ -59,15 +62,19 @@ class StoreManager(object):
         """returns a transaction cursor, if supported, from the store adapter;\n'None' if not supported"""
         return self.adapter.getTransactionCursor()
 
-    def insert(self, obj: dict, fqtn: str = None, transaction=None):
+    def insert(self, obj: dict, fqtn: str = None, sequenceName: str = None, transaction=None):
         """
         inserts an object into the object store;\n
         obj: dict, the object to insert;\n
         fqtn: str, fully-qualified table name, in the format 'schema.table', only providing the table name assumes the default schema, if not provided, the fqtn must be provided in the obj with the key '__fqtn__';\n
+        sequenceName: str, name of the sequence to get an id from, if provided, overrides the default value;\n
         transaction: store transaction cursor, if supported, if not provided, the store adapter auto-commits
         """
         _fqtn = obj.get("__fqtn__", fqtn)
         _tblCfg = self._getConfig(fqtn=_fqtn)
+        assignNextValue(
+            obj=obj, config=_tblCfg, adapter=self.adapter, sequenceName=sequenceName, loggerName=self.logger.name
+        )
         validateAttributeValues(obj=obj, config=_tblCfg)
         _dbKeys, _objKeys = getConfigFieldNames(config=_tblCfg)
         return self.adapter.insert(fqtn=_fqtn, dbKeys=_dbKeys, objKeys=_objKeys, obj=obj, xaction=transaction)

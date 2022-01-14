@@ -28,3 +28,6 @@ class StoreAdapter(object):
 
     def delete(self, fqtn: str, dbKeys: list, objKeys: list, conditions: dict, xaction=None):
         pass
+
+    def next(self, sequenceName: str):
+        pass
