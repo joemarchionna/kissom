@@ -147,6 +147,14 @@ class StoreManager(object):
             fqtn=_fqtn, dbKeys=_dbPKeys, objKeys=_objPKeys, conditions=conditions, xaction=transaction
         )
 
+    def nextSequenceValue(self, sequenceName: str, transaction=None):
+        """
+        returns the next value of the sequence specified;\n
+        sequenceName: str, the name of the sequence object to pull the next value from;\n
+        transaction: store transaction cursor, if supported, if not provided, the store adapter auto-commits
+        """
+        return self.adapter.next(sequenceName=sequenceName, xaction=transaction)
+
     def _getConfig(self, fqtn: str):
         if not fqtn:
             raise TableNameNotDefinedException()
