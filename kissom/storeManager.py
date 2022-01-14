@@ -8,6 +8,7 @@ from kissom.utils.storeConfig import (
     getPrimaryKeyFieldNames,
 )
 from kissom.utils.sql import convertConditionsToDbNames
+from kissom.utils.validations import validateAttributeValues
 from kissom.appExceptions import (
     ObjectNotProvidedException,
     TableNameNotDefinedException,
@@ -67,6 +68,7 @@ class StoreManager(object):
         """
         _fqtn = obj.get("__fqtn__", fqtn)
         _tblCfg = self._getConfig(fqtn=_fqtn)
+        validateAttributeValues(obj=obj, config=_tblCfg)
         _dbKeys, _objKeys = getConfigFieldNames(config=_tblCfg)
         return self.adapter.insert(fqtn=_fqtn, dbKeys=_dbKeys, objKeys=_objKeys, obj=obj, xaction=transaction)
 
@@ -98,6 +100,7 @@ class StoreManager(object):
         """
         _fqtn = obj.get("__fqtn__", fqtn)
         _tblCfg = self._getConfig(fqtn=_fqtn)
+        validateAttributeValues(obj=obj, config=_tblCfg)
         _dbKeys, _objKeys = getConfigFieldNames(config=_tblCfg)
         conditions = self._getPkConditions(
             obj=obj, config=_tblCfg, conditions=conditions, usePrimaryKeys=usePrimaryKeys
