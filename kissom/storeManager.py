@@ -73,7 +73,7 @@ class StoreManager(object):
         _fqtn = obj.get("__fqtn__", fqtn)
         _tblCfg = self._getConfig(fqtn=_fqtn)
         assignNextValue(
-            obj=obj, config=_tblCfg, adapter=self.adapter, sequenceName=sequenceName, loggerName=self.logger.name
+            obj=obj, config=_tblCfg, adapter=self.adapter, sequenceName=sequenceName, xaction=transaction, loggerName=self.logger.name
         )
         validateAttributeValues(obj=obj, config=_tblCfg)
         _dbKeys, _objKeys = getConfigFieldNames(config=_tblCfg)
