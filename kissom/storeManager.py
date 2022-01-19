@@ -73,7 +73,12 @@ class StoreManager(object):
         _fqtn = obj.get("__fqtn__", fqtn)
         _tblCfg = self._getConfig(fqtn=_fqtn)
         assignNextValue(
-            obj=obj, config=_tblCfg, adapter=self.adapter, sequenceName=sequenceName, xaction=transaction, loggerName=self.logger.name
+            obj=obj,
+            config=_tblCfg,
+            adapter=self.adapter,
+            sequenceName=sequenceName,
+            xaction=transaction,
+            loggerName=self.logger.name,
         )
         validateAttributeValues(obj=obj, config=_tblCfg)
         _dbKeys, _objKeys = getConfigFieldNames(config=_tblCfg)
@@ -109,12 +114,19 @@ class StoreManager(object):
         _tblCfg = self._getConfig(fqtn=_fqtn)
         validateAttributeValues(obj=obj, config=_tblCfg)
         _dbKeys, _objKeys = getConfigFieldNames(config=_tblCfg)
+        _dbPKeys, _objPKeys = getPrimaryKeyFieldNames(config=_tblCfg)
         conditions = self._getPkConditions(
             obj=obj, config=_tblCfg, conditions=conditions, usePrimaryKeys=usePrimaryKeys
         )
         convertConditionsToDbNames(conditionTree=conditions, dbKeys=_dbKeys, objKeys=_objKeys)
         return self.adapter.update(
-            fqtn=_fqtn, dbKeys=_dbKeys, objKeys=_objKeys, obj=obj, conditions=conditions, xaction=transaction
+            fqtn=_fqtn,
+            dbKeys=_dbKeys,
+            objKeys=_objKeys,
+            objPrimaryKeys=_objPKeys,
+            obj=obj,
+            conditions=conditions,
+            xaction=transaction,
         )
 
     def delete(

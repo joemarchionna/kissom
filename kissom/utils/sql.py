@@ -22,12 +22,21 @@ def insertSql(tableName: str, objKeys: list, dbKeys: list, data: dict):
     return _sql, _valtpl
 
 
-def updateSql(tableName: str, objKeys: list, dbKeys: list, data: dict, conditionTree: dict):
+def updateSql(
+    tableName: str,
+    objKeys: list,
+    objPrimaryKeys: list,
+    dbKeys: list,
+    data: dict,
+    conditionTree: dict,
+    setPrimaryKeys: bool = False,
+):
     _sql = "UPDATE {fqtn} SET ".format(fqtn=tableName)
     _baseLength = len(_sql)
     _sqlVals = []
     for i in range(len(objKeys)):
-        if objKeys[i] in data:
+        # if the object key is present and it is not a primary key then set it, unless explictly told to set the primary key
+        if (objKeys[i] in data) and ((objKeys[i] not in objPrimaryKeys) or setPrimaryKeys):
             _sql = addParam(baseLength=_baseLength, sqlBase=_sql, sqlToAdd="{field} = %s".format(field=dbKeys[i]))
             _sqlVals.append(data[objKeys[i]])
     _sqlP, _valuesP = getWhereConditions(conditionTree=conditionTree)

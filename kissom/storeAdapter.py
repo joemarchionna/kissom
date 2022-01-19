@@ -23,7 +23,9 @@ class StoreAdapter(object):
     def select(self, fqtn: str, dbKeys: list, objKeys: list, conditions: dict):
         pass
 
-    def update(self, fqtn: str, dbKeys: list, objKeys: list, obj: dict, conditions: dict, xaction=None):
+    def update(
+        self, fqtn: str, dbKeys: list, objKeys: list, objPrimaryKeys: list, obj: dict, conditions: dict, xaction=None
+    ):
         pass
 
     def delete(self, fqtn: str, dbKeys: list, objKeys: list, conditions: dict, xaction=None):

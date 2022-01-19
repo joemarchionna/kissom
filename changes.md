@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2022 01 18
+### Changed
+- update sql building process
+- broke out sql tests into specialized test classes
+
 ## [1.4.1] - 2022 01 14
 ### Fixed
 - bug with insert in StoreManager
