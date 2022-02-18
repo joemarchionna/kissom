@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="kissom",
-    version="1.5.0",
+    version="1.6.1",
     author="Joe Marchionna",
     author_email="joemarchionna@gmail.com",
     description="Keep It Simple Stupid Object Manager",
@@ -12,7 +12,7 @@ setup(
     packages=setuptools.find_packages(),
     url="https://github.com/joemarchionna/kissom.git",
     keywords=["ORM", "DATA ACCESS"],
-    install_requires=[],
+    install_requires=open("requirements/prod.txt", "r").read().splitlines(),
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",

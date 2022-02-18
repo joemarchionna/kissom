@@ -48,6 +48,32 @@ def updateSql(
     return _sql, _values
 
 
+def replaceSql(
+    tableName: str,
+    objKeys: list,
+    objPrimaryKeys: list,
+    dbKeys: list,
+    data: dict,
+    conditionTree: dict,
+    setPrimaryKeys: bool = False,
+):
+    _sql = "UPDATE {fqtn} SET ".format(fqtn=tableName)
+    _baseLength = len(_sql)
+    _sqlVals = []
+    for i in range(len(dbKeys)):
+        # if the object key is not a primary key then set it, unless explictly told to set the primary key
+        if (objKeys[i] not in objPrimaryKeys) or setPrimaryKeys:
+            _sql = addParam(baseLength=_baseLength, sqlBase=_sql, sqlToAdd="{field} = %s".format(field=dbKeys[i]))
+            _sqlVals.append(data.get(objKeys[i], None))
+    _sqlP, _valuesP = getWhereConditions(conditionTree=conditionTree)
+    _sql = _sql + _sqlP + _getReturning(keys=dbKeys)
+    _sqlVals.extend(_valuesP)
+    _values = tuple(
+        _sqlVals,
+    )
+    return _sql, _values
+
+
 def deleteSql(tableName: str, dbKeys: list, conditionTree: dict):
     _sql = "DELETE FROM {fqtn}".format(fqtn=tableName)
     _sqlVals = []

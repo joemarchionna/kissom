@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.1] - 2022 02 17
+### Added
+- added replace method to the manager and adapter and supporting sql and test cases
+- added getObjectKeys method to the manager
+### Changed
+- updated setup.py to include the git-based projects using requirements files
+
 ## [1.5.0] - 2022 01 18
 ### Changed
 - update sql building process

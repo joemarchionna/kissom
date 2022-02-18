@@ -1,6 +1,4 @@
-from asyncio.log import logger
 import logging
-from os import name
 from kissom.storeAdapter import StoreAdapter
 from kissom.utils.sequences import assignNextValue
 from kissom.utils.storeConfig import (
@@ -11,6 +9,7 @@ from kissom.utils.storeConfig import (
     getPrimaryKeyFieldNames,
 )
 from kissom.utils.sql import convertConditionsToDbNames
+from kissom.utils.names import getFqn
 from kissom.utils.validations import validateAttributeValues
 from kissom.appExceptions import (
     ObjectNotProvidedException,
@@ -32,7 +31,7 @@ class StoreManager(object):
     def __init__(
         self,
         adapter: StoreAdapter,
-        loggerName: str = None,
+        loggerName: str = "kissom",
         config: dict = None,
         configFN: str = "local/storeConfig.json",
     ) -> None:
@@ -55,8 +54,18 @@ class StoreManager(object):
         self.logger.debug("Getting Table Definitions From Store For '{}'".format(tableNames))
         _cfg = {}
         for fqtn in tableNames:
-            _cfg[fqtn] = self.adapter.getTableDefinition(tableName=fqtn)
+            _fqtn = getFqn(fullyQualifiedName=fqtn, defaultSchema=self.adapter.getDefaultSchemaName())
+            _cfg[_fqtn] = self.adapter.getTableDefinition(tableName=_fqtn)
         return _cfg
+
+    def getObjectKeys(self, fqtn: str):
+        """
+        returns the object (dict) keys expected for the table name provided;\n
+        fqtn: str, fully-qualified table name, in the format 'schema.table', only providing the table name assumes the default schema;\n
+        """
+        _cfg = self._getConfig(fqtn=fqtn)
+        _dbKeys, _objKeys = getConfigFieldNames(config=_cfg, logName=self.logger.name)
+        return _objKeys
 
     def getTransactionCursor(self):
         """returns a transaction cursor, if supported, from the store adapter;\n'None' if not supported"""
@@ -129,6 +138,38 @@ class StoreManager(object):
             xaction=transaction,
         )
 
+    def replace(
+        self, obj: dict, fqtn: str = None, conditions: dict = None, usePrimaryKeys: bool = True, transaction=None
+    ):
+        """
+        replaces an object in the object store;\n
+        obj: dict, the object values to update, this can be a partial object, but it will update all the fields in the table adding nulls where necessary;\n
+        fqtn: str, fully-qualified table name, in the format 'schema.table', only providing the table name assumes the default schema, if not provided, the fqtn must be provided in the obj with the key '__fqtn__';\n
+        conditions: dict, the 'where' clause in the following formats:\n
+        Simple: {"fieldName":"firstName","fieldValue":"Johnny"};\n
+        Complex: {"operator":"OR","conditions":[{"operator":"AND","conditions":[{"fieldName":"firstName","fieldValue":"Johnny","comparer":"="},{"fieldName":"lastName","fieldValue":"Appleseed"}]},{"operator":"AND","conditions":[{"fieldName":"firstName","fieldValue":"Patrick"},{"fieldName":"lastName","fieldValue":"Putnum"}]}]};\n
+        usePrimaryKeys: bool, if no conditions are provided, the primary keys of the object are used to define the conditions to update;\n
+        transaction: store transaction cursor, if supported, if not provided, the store adapter auto-commits
+        """
+        _fqtn = obj.get("__fqtn__", fqtn)
+        _tblCfg = self._getConfig(fqtn=_fqtn)
+        validateAttributeValues(obj=obj, config=_tblCfg)
+        _dbKeys, _objKeys = getConfigFieldNames(config=_tblCfg)
+        _dbPKeys, _objPKeys = getPrimaryKeyFieldNames(config=_tblCfg)
+        conditions = self._getPkConditions(
+            obj=obj, config=_tblCfg, conditions=conditions, usePrimaryKeys=usePrimaryKeys
+        )
+        convertConditionsToDbNames(conditionTree=conditions, dbKeys=_dbKeys, objKeys=_objKeys)
+        return self.adapter.replace(
+            fqtn=_fqtn,
+            dbKeys=_dbKeys,
+            objKeys=_objKeys,
+            objPrimaryKeys=_objPKeys,
+            obj=obj,
+            conditions=conditions,
+            xaction=transaction,
+        )
+
     def delete(
         self,
         obj: dict = None,
@@ -165,20 +206,22 @@ class StoreManager(object):
         sequenceName: str, the name of the sequence object to pull the next value from;\n
         transaction: store transaction cursor, if supported, if not provided, the store adapter auto-commits
         """
-        return self.adapter.next(sequenceName=sequenceName, xaction=transaction)
+        _sequenceName = getFqn(fullyQualifiedName=sequenceName, defaultSchema=self.adapter.getDefaultSchemaName())
+        return self.adapter.next(sequenceName=_sequenceName, xaction=transaction)
 
     def _getConfig(self, fqtn: str):
         if not fqtn:
             raise TableNameNotDefinedException()
+        _fqtn = getFqn(fullyQualifiedName=fqtn, defaultSchema=self.adapter.getDefaultSchemaName())
         if not self.config:
             self.config = loadConfigFile(filename=self.configFileName)
-        if fqtn in self.config:
-            return self.config[fqtn]
-        dbColumns = self.adapter.getTableDefinition(tableName=fqtn)
-        self.config[fqtn] = list({"db": x} for x in dbColumns)
-        deriveObjNames(config=self.config[fqtn], logName=self.logger.name)
+        if _fqtn in self.config:
+            return self.config[_fqtn]
+        dbColumns = self.adapter.getTableDefinition(tableName=_fqtn)
+        self.config[_fqtn] = list({"db": x} for x in dbColumns)
+        deriveObjNames(config=self.config[_fqtn], logName=self.logger.name)
         saveConfigFile(filename=self.configFileName, config=self.config)
-        return self.config[fqtn]
+        return self.config[_fqtn]
 
     def _getPkConditions(self, obj: dict, config, conditions: dict, usePrimaryKeys: bool):
         if (conditions is None) and usePrimaryKeys:

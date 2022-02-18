@@ -34,3 +34,8 @@ def splitFQTN(fullyQualifiedTableName: str, defaultSchema: str = "public"):
         return defaultSchema, fullyQualifiedTableName
     _elements = fullyQualifiedTableName.split(".")
     return _elements[0], _elements[1]
+
+
+def getFqn(fullyQualifiedName: str, defaultSchema: str = "public"):
+    schema, table = splitFQTN(fullyQualifiedTableName=fullyQualifiedName, defaultSchema=defaultSchema)
+    return combineFQTN(schemaName=schema, tableName=table)

@@ -17,6 +17,9 @@ class StoreAdapter(object):
     def closeConnection(self):
         pass
 
+    def getDefaultSchemaName(self):
+        pass
+
     def insert(self, fqtn: str, dbKeys: list, objKeys: list, obj: dict, xaction=None):
         pass
 
@@ -24,6 +27,11 @@ class StoreAdapter(object):
         pass
 
     def update(
+        self, fqtn: str, dbKeys: list, objKeys: list, objPrimaryKeys: list, obj: dict, conditions: dict, xaction=None
+    ):
+        pass
+
+    def replace(
         self, fqtn: str, dbKeys: list, objKeys: list, objPrimaryKeys: list, obj: dict, conditions: dict, xaction=None
     ):
         pass
