@@ -7,3 +7,5 @@ from kissom.appExceptions import (
     PrimaryKeyNotProvidedException,
     ObjectAttributeValueException,
 )
+
+from kissom.utils.conditions import getConditions, getConditionGroup
