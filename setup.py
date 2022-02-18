@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="kissom",
-    version="1.6.1",
+    version="1.7.0",
     author="Joe Marchionna",
     author_email="joemarchionna@gmail.com",
     description="Keep It Simple Stupid Object Manager",

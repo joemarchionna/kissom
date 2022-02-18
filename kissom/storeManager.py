@@ -49,6 +49,10 @@ class StoreManager(object):
         self.logger.debug("Executing __exit__")
         self.adapter.closeConnection()
 
+    def closeConnection(self):
+        self.logger.debug("Closing Connection")
+        self.adapter.closeConnection()
+
     def getConfig(self, tableNames: list, configFN: str = None):
         """returns the configuration for the tables specified from the store adapter"""
         self.logger.debug("Getting Table Definitions From Store For '{}'".format(tableNames))
@@ -106,9 +110,7 @@ class StoreManager(object):
         convertConditionsToDbNames(conditionTree=conditions, dbKeys=_dbKeys, objKeys=_objKeys)
         return self.adapter.select(fqtn=fqtn, dbKeys=_dbKeys, objKeys=_objKeys, conditions=conditions)
 
-    def update(
-        self, obj: dict, fqtn: str = None, conditions: dict = None, usePrimaryKeys: bool = True, transaction=None
-    ):
+    def update(self, obj: dict, fqtn: str = None, conditions: dict = None, usePrimaryKeys: bool = True, transaction=None):
         """
         updates an object in the object store;\n
         obj: dict, the object values to update, this can be a partial object, it will only update the fields provided;\n
@@ -124,9 +126,7 @@ class StoreManager(object):
         validateAttributeValues(obj=obj, config=_tblCfg)
         _dbKeys, _objKeys = getConfigFieldNames(config=_tblCfg)
         _dbPKeys, _objPKeys = getPrimaryKeyFieldNames(config=_tblCfg)
-        conditions = self._getPkConditions(
-            obj=obj, config=_tblCfg, conditions=conditions, usePrimaryKeys=usePrimaryKeys
-        )
+        conditions = self._getPkConditions(obj=obj, config=_tblCfg, conditions=conditions, usePrimaryKeys=usePrimaryKeys)
         convertConditionsToDbNames(conditionTree=conditions, dbKeys=_dbKeys, objKeys=_objKeys)
         return self.adapter.update(
             fqtn=_fqtn,
@@ -138,9 +138,7 @@ class StoreManager(object):
             xaction=transaction,
         )
 
-    def replace(
-        self, obj: dict, fqtn: str = None, conditions: dict = None, usePrimaryKeys: bool = True, transaction=None
-    ):
+    def replace(self, obj: dict, fqtn: str = None, conditions: dict = None, usePrimaryKeys: bool = True, transaction=None):
         """
         replaces an object in the object store;\n
         obj: dict, the object values to update, this can be a partial object, but it will update all the fields in the table adding nulls where necessary;\n
@@ -156,9 +154,7 @@ class StoreManager(object):
         validateAttributeValues(obj=obj, config=_tblCfg)
         _dbKeys, _objKeys = getConfigFieldNames(config=_tblCfg)
         _dbPKeys, _objPKeys = getPrimaryKeyFieldNames(config=_tblCfg)
-        conditions = self._getPkConditions(
-            obj=obj, config=_tblCfg, conditions=conditions, usePrimaryKeys=usePrimaryKeys
-        )
+        conditions = self._getPkConditions(obj=obj, config=_tblCfg, conditions=conditions, usePrimaryKeys=usePrimaryKeys)
         convertConditionsToDbNames(conditionTree=conditions, dbKeys=_dbKeys, objKeys=_objKeys)
         return self.adapter.replace(
             fqtn=_fqtn,
@@ -192,13 +188,9 @@ class StoreManager(object):
         _tblCfg = self._getConfig(fqtn=_fqtn)
         _dbKeys, _objKeys = getConfigFieldNames(config=_tblCfg)
         _dbPKeys, _objPKeys = getPrimaryKeyFieldNames(config=_tblCfg)
-        conditions = self._getPkConditions(
-            obj=obj, config=_tblCfg, conditions=conditions, usePrimaryKeys=usePrimaryKeys
-        )
+        conditions = self._getPkConditions(obj=obj, config=_tblCfg, conditions=conditions, usePrimaryKeys=usePrimaryKeys)
         convertConditionsToDbNames(conditionTree=conditions, dbKeys=_dbKeys, objKeys=_objKeys)
-        return self.adapter.delete(
-            fqtn=_fqtn, dbKeys=_dbPKeys, objKeys=_objPKeys, conditions=conditions, xaction=transaction
-        )
+        return self.adapter.delete(fqtn=_fqtn, dbKeys=_dbPKeys, objKeys=_objPKeys, conditions=conditions, xaction=transaction)
 
     def nextSequenceValue(self, sequenceName: str, transaction=None):
         """
