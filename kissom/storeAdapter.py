@@ -11,6 +11,12 @@ class StoreAdapter(object):
     def getTransactionCursor(self):
         pass
 
+    def commit(self):
+        pass
+
+    def rollback(self):
+        pass
+
     def openConnection(self):
         pass
 

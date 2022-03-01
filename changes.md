@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.0] - 2022 03 01
+### Fixed
+- commit and rollback method issues
+
+## [1.9.1] - 2022 02 18
+### Added
+- commit and rollback methods
+
 ## [1.8.0] - 2022 02 17
 ### Added
 - condition structure methods
