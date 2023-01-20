@@ -5,7 +5,7 @@ class StoreAdapter(object):
     def __init__(self, logName: str = None):
         self.logger = logging.getLogger(logName)
 
-    def getTableDefinition(self, tableName: str):
+    def getDefinition(self, tableName: str):
         pass
 
     def getTransactionCursor(self):

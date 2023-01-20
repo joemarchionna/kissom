@@ -3,6 +3,7 @@ import json
 import pathlib
 import logging
 from kissom.utils.names import normalizeStoreNameToObj
+from kissom.versioning.storeConfig import convert
 
 
 def loadConfigFile(filename: str, logName: str = None):
@@ -12,6 +13,9 @@ def loadConfigFile(filename: str, logName: str = None):
     if filename and os.path.exists(path=filename):
         with open(file=filename) as reader:
             _cfg = json.load(reader)
+            _cfg, upgraded = convert(config=_cfg)
+            if upgraded:
+                saveConfigFile(filename, _cfg, logName)
     return _cfg
 
 
@@ -29,7 +33,7 @@ def saveConfigFile(filename: str, config: dict, logName: str = None):
 def deriveObjNames(config: list, logName: str = None):
     _logger = logging.getLogger(logName)
     _logger.debug("Deriving Object Field Names From Database Column Names: {}".format(config))
-    for _col in config:
+    for _col in config["columns"]:
         objName = normalizeStoreNameToObj(name=_col["db"]["name"])
         _col["obj"] = {"name": objName, "type": _col["db"]["type"]}
 
@@ -39,7 +43,7 @@ def getConfigFieldNames(config: list, logName: str = None):
     _logger.debug("Getting Database and Object Keys From {}".format(config))
     _dbKeys = []
     _objKeys = []
-    for _c in config:
+    for _c in config["columns"]:
         _logger.debug("Column Config: {}".format(_c))
         _dbKeys.append(_c["db"]["name"])
         _objKeys.append(_c["obj"]["name"])
@@ -51,8 +55,29 @@ def getPrimaryKeyFieldNames(config: list, logName: str = None):
     _logger.debug("Getting Database and Object Primary Keys")
     _dbKeys = []
     _objKeys = []
-    for _c in config:
+    for _c in config["columns"]:
         if _c["db"].get("isPrimaryKey", False):
             _dbKeys.append(_c["db"]["name"])
             _objKeys.append(_c["obj"]["name"])
     return _dbKeys, _objKeys
+
+
+def createColumnDict(
+    index,
+    name: str,
+    type: str,
+    default=None,
+    isNullable: bool = True,
+    isUpdatable: bool = False,
+    isPrimaryKey: bool = False,
+):
+    columnDef = {
+        "index": index,
+        "name": name,
+        "type": type,
+        "default": default,
+        "isNullable": isNullable,
+        "isUpdatable": isUpdatable,
+        "isPrimaryKey": isPrimaryKey,
+    }
+    return columnDef
