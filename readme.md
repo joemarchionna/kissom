@@ -25,7 +25,8 @@ The plan is to add additional adapters.
 
 Use
 ===
-Using the kissom_pg package to access a PostgreSQL database. Let's say you create the following table via psql:
+Using the StoreManager class from the kissom package and the PgAdapter from the kissom_pg package to 
+access a PostgreSQL database. Let's say you create the following table via psql:
 
 ```
 create schema example;
@@ -57,7 +58,12 @@ mgr = StoreManager(adapter=PgAdapter(connectionString="<add your conn str here>"
 insertedRecord = mgr.insert(obj=record, fqtn="example.car")
 ```
 Note that the fqtn can be included in the record with the key "\_\_fqtn__". Also note that the manager 
-will convert grossKg to gross_kg.
+will convert all field names from camel case in the object to lower case underscore-separated in the 
+first database call; for example: grossKg to gross_kg. Note that if the object field name and the 
+database field name do not conform to this conversion, after the StoreManager has added the table 
+configuration to the store config in the local directory, the object or database name can be changed as 
+appropriate - the conversion only occurs once when getting the table/view information. Once the 
+information is pulled from the database, the StoreManager uses the local file to map field names. 
 
 Getting all of the stored records in the table:
 
@@ -104,5 +110,3 @@ Code Formatting
 ```
     $ black . -l 119
 ```
-
-====

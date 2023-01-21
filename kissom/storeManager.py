@@ -15,6 +15,7 @@ from kissom.appExceptions import (
     ObjectNotProvidedException,
     TableNameNotDefinedException,
     PrimaryKeyNotProvidedException,
+    InvalidRequestException,
 )
 
 
@@ -70,7 +71,7 @@ class StoreManager(object):
         _cfg = {}
         for fqtn in tableNames:
             _fqtn = getFqn(fullyQualifiedName=fqtn, defaultSchema=self.adapter.getDefaultSchemaName())
-            _cfg[_fqtn] = self.adapter.getTableDefinition(tableName=_fqtn)
+            _cfg[_fqtn] = self.adapter.getDefinition(tableName=_fqtn)
         return _cfg
 
     def getObjectKeys(self, fqtn: str):
@@ -96,6 +97,7 @@ class StoreManager(object):
         """
         _fqtn = obj.get("__fqtn__", fqtn)
         _tblCfg = self._getConfig(fqtn=_fqtn)
+        self._validateIsTable(fqtn=_fqtn, config=_tblCfg)
         assignNextValue(
             obj=obj,
             config=_tblCfg,
@@ -136,6 +138,7 @@ class StoreManager(object):
         """
         _fqtn = obj.get("__fqtn__", fqtn)
         _tblCfg = self._getConfig(fqtn=_fqtn)
+        self._validateIsTable(fqtn=_fqtn, config=_tblCfg)
         validateAttributeValues(obj=obj, config=_tblCfg)
         _dbKeys, _objKeys = getConfigFieldNames(config=_tblCfg)
         _dbPKeys, _objPKeys = getPrimaryKeyFieldNames(config=_tblCfg)
@@ -168,6 +171,7 @@ class StoreManager(object):
         """
         _fqtn = obj.get("__fqtn__", fqtn)
         _tblCfg = self._getConfig(fqtn=_fqtn)
+        self._validateIsTable(fqtn=_fqtn, config=_tblCfg)
         validateAttributeValues(obj=obj, config=_tblCfg)
         _dbKeys, _objKeys = getConfigFieldNames(config=_tblCfg)
         _dbPKeys, _objPKeys = getPrimaryKeyFieldNames(config=_tblCfg)
@@ -205,6 +209,7 @@ class StoreManager(object):
         """
         _fqtn = obj.get("__fqtn__", fqtn) if obj else fqtn
         _tblCfg = self._getConfig(fqtn=_fqtn)
+        self._validateIsTable(fqtn=_fqtn, config=_tblCfg)
         _dbKeys, _objKeys = getConfigFieldNames(config=_tblCfg)
         _dbPKeys, _objPKeys = getPrimaryKeyFieldNames(config=_tblCfg)
         conditions = self._getPkConditions(
@@ -232,8 +237,8 @@ class StoreManager(object):
             self.config = loadConfigFile(filename=self.configFileName)
         if _fqtn in self.config:
             return self.config[_fqtn]
-        dbColumns = self.adapter.getTableDefinition(tableName=_fqtn)
-        self.config[_fqtn] = list({"db": x} for x in dbColumns)
+        dbDef = self.adapter.getDefinition(tableName=_fqtn)
+        self.config[_fqtn] = {"isTable": dbDef["isTable"], "columns": list({"db": x} for x in dbDef["columns"])}
         deriveObjNames(config=self.config[_fqtn], logName=self.logger.name)
         saveConfigFile(filename=self.configFileName, config=self.config)
         return self.config[_fqtn]
@@ -250,3 +255,7 @@ class StoreManager(object):
                 except KeyError as kerr:
                     raise PrimaryKeyNotProvidedException(keyName=_objPKeys[i])
         return conditions
+
+    def _validateIsTable(self, fqtn: str, config: dict):
+        if not config.get("isTable", False):
+            raise InvalidRequestException("{} Is Not A Table, You Can't Modify It's Contents".format(fqtn))

@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.5] - 2023 01 20
+### Fixed
+- bug in v02 converter
+### Updated
+- readme.md file
+
+## [1.11.2] - 2022 08 09
+### Changed
+- Changed structure of storeConfig data to include keys "isTable" and "columns"
+
+## [1.11.1] - 2022 07 24
+### Added
+- isPrimaryKey parameter to createColumnDict method
+### Changed
+- Changed exception name
+- Changed method getTableDefinition to getDefinition in storeAdapter
+
+## [1.11.0] - 2022 07 23
+### Added
+- createColumnDict method
+
 ## [1.10.0] - 2022 03 01
 ### Fixed
 - commit and rollback method issues
