@@ -1,8 +1,13 @@
 {
     "name": "kissom",
-    "version": "2.0.0",
+    "version": "2.0.5",
     "author": "Joe Marchionna",
     "author_email": "joemarchionna@gmail.com",
     "description": "Keep It Simple Stupid Object Manager",
-    "url": "https://github.com/joemarchionna/kissom.git"
+    "requirements":"requirements/prod.txt",
+    "url": "https://github.com/joemarchionna/kissom.git",
+    "packageData":{
+        "versions":["*.json"],
+        "kissom":["reference/*.json"]
+    }
 }

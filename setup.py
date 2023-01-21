@@ -1,7 +1,8 @@
 import setuptools, json
 from setuptools import setup
 
-_metadata = json.load(open("versions/_metadata.json", "r"))
+# This file should not be edited when changing versions, edit the package metadata file
+_metadata = json.load(open("kissom/_metadata.json", "r"))
 
 setup(
     name=_metadata["name"],
@@ -11,12 +12,12 @@ setup(
     description=_metadata["description"],
     long_description=open("readme.md").read(),
     license=open("license.md").read(),
-    package_data={"kissom": ["*.json"]},
+    package_data=_metadata["packageData"],
     include_package_data=True,
     packages=setuptools.find_packages(),
     url=_metadata["url"],
     keywords=["ORM", "DATA ACCESS"],
-    install_requires=open("requirements/prod.txt", "r").read().splitlines(),
+    install_requires=open(_metadata["requirements"], "r").read().splitlines(),
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",

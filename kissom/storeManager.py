@@ -97,7 +97,7 @@ class StoreManager(object):
         """
         _fqtn = obj.get("__fqtn__", fqtn)
         _tblCfg = self._getConfig(fqtn=_fqtn)
-        self._validateIsTable(fqtn=_fqtn)
+        self._validateIsTable(fqtn=_fqtn, config=_tblCfg)
         assignNextValue(
             obj=obj,
             config=_tblCfg,
@@ -138,7 +138,7 @@ class StoreManager(object):
         """
         _fqtn = obj.get("__fqtn__", fqtn)
         _tblCfg = self._getConfig(fqtn=_fqtn)
-        self._validateIsTable(fqtn=_fqtn)
+        self._validateIsTable(fqtn=_fqtn, config=_tblCfg)
         validateAttributeValues(obj=obj, config=_tblCfg)
         _dbKeys, _objKeys = getConfigFieldNames(config=_tblCfg)
         _dbPKeys, _objPKeys = getPrimaryKeyFieldNames(config=_tblCfg)
@@ -171,7 +171,7 @@ class StoreManager(object):
         """
         _fqtn = obj.get("__fqtn__", fqtn)
         _tblCfg = self._getConfig(fqtn=_fqtn)
-        self._validateIsTable(fqtn=_fqtn)
+        self._validateIsTable(fqtn=_fqtn, config=_tblCfg)
         validateAttributeValues(obj=obj, config=_tblCfg)
         _dbKeys, _objKeys = getConfigFieldNames(config=_tblCfg)
         _dbPKeys, _objPKeys = getPrimaryKeyFieldNames(config=_tblCfg)
@@ -209,7 +209,7 @@ class StoreManager(object):
         """
         _fqtn = obj.get("__fqtn__", fqtn) if obj else fqtn
         _tblCfg = self._getConfig(fqtn=_fqtn)
-        self._validateIsTable(fqtn=_fqtn)
+        self._validateIsTable(fqtn=_fqtn, config=_tblCfg)
         _dbKeys, _objKeys = getConfigFieldNames(config=_tblCfg)
         _dbPKeys, _objPKeys = getPrimaryKeyFieldNames(config=_tblCfg)
         conditions = self._getPkConditions(

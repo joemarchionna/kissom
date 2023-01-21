@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.5] - 2023 01 20
+### Fixed
+- bug in v02 converter
+### Updated
+- readme.md file
+
 ## [1.11.2] - 2022 08 09
 ### Changed
 - Changed structure of storeConfig data to include keys "isTable" and "columns"

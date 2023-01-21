@@ -4,16 +4,17 @@ import pathlib
 import logging
 from kissom.utils.names import normalizeStoreNameToObj
 from kissom.versioning.storeConfig import convert
+from kissom.versioning import getMajorVersion
 
 
 def loadConfigFile(filename: str, logName: str = None):
     _logger = logging.getLogger(logName)
     _logger.debug("Loading Configuration File '{}'".format(filename))
-    _cfg = {}
+    _cfg = {"__version__": getMajorVersion(logName)}
     if filename and os.path.exists(path=filename):
         with open(file=filename) as reader:
             _cfg = json.load(reader)
-            _cfg, upgraded = convert(config=_cfg)
+            _cfg, upgraded = convert(config=_cfg, logName=logName)
             if upgraded:
                 saveConfigFile(filename, _cfg, logName)
     return _cfg
