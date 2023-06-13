@@ -34,5 +34,10 @@
                 ]
             }
         ]
+    },
+    {
+        "fieldName": "firstName",
+        "fieldValue": "John%",
+        "comparer": "LIKE"
     }
 ]
