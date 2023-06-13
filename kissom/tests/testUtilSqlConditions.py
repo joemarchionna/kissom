@@ -30,3 +30,10 @@ class TestUtilSqlConditions(unittest.TestCase):
         sql, vals = getConditions(conditionTree=conditions[1])
         self.assertEqual(sql, "((firstName = %s AND lastName = %s) OR (firstName = %s AND lastName = %s))")
         self.assertEqual(vals, ["Johnny", "Appleseed", "Patrick", "Putnum"])
+
+    def test_e_simple_like(self):
+        with open("kissom/reference/conditions.json") as reader:
+            conditions = json.load(reader)
+        sql, vals = getConditions(conditionTree=conditions[2])
+        self.assertEqual(sql, "firstName LIKE %s")
+        self.assertEqual(vals, ["John%"])
