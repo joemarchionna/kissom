@@ -2,4 +2,5 @@ include *.md
 include requirements/*.txt
 recursive-include docs *.md
 include kissom/_metadata.json
+prune kissom/reference
 prune tests/

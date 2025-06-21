@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2025 06 21
+### Added
+- pyproject.toml
+### Changed
+- requirements/dev.txt
+- manifest.in
+
 ## [2.0.7] - 2023 06 13
 ### Changed
 - moved tests
